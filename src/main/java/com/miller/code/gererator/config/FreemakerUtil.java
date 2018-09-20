@@ -2,6 +2,7 @@ package com.miller.code.gererator.config;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -44,7 +46,7 @@ public class FreemakerUtil {
      * @return
      * @throws FileNotFoundException
      */
-    public static Template getTemplate(TemplateEnum  templateEnum) throws FileNotFoundException {
+    public static Template getTemplate(TemplateEnum templateEnum) throws FileNotFoundException {
         try {
             return config.getTemplate(templateEnum.getName());
         } catch (IOException e) {
@@ -52,19 +54,15 @@ public class FreemakerUtil {
         }
     }
 
-
-    @AllArgsConstructor
-    public enum TemplateEnum {
-        /**
-         * 控制层模板
-         */
-        CONTROLLER("controller.ftl"),
-        ;
-        private String name;
-
-        public String getName() {
-            return name;
-        }
+    /**
+     * 写入模板文件到本地指定目录
+     * @param template 模板对象
+     * @param data 数据
+     * @param filePath 本地路径
+     * @throws IOException
+     * @throws TemplateException
+     */
+    public static void writeTemplate(Template template, Object data, File filePath) throws IOException, TemplateException {
+        template.process(data, new FileWriter(filePath));
     }
-
 }

@@ -16,7 +16,7 @@ public enum DBEnum {
     /**
      * mysql数据库 TODO
      */
-    MYSQL("mysql", "com.mysql.jdbc.Driver"),
+    MYSQL("Mysql", "com.mysql.jdbc.Driver"),
 
     ;
 
