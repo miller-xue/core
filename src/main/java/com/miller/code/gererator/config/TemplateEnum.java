@@ -14,9 +14,7 @@ public enum TemplateEnum {
      */
     CONTROLLER("controller.ftl","controller","Controller.java"),
     SERVICE("service.ftl","service","Service.java"),
-/*
     SERVICE_IMPL("service_impl.ftl","service.impl","ServiceImpl.java"),
-*/
     ;
     /**
      * 模板名称

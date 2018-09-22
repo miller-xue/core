@@ -6,6 +6,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -99,7 +100,7 @@ public class GenUtils
         //TODO 可以考虑加上子包。childModuleName
 
         // 5.模型名称
-        path.append(File.separator).append(modelName);
+        path.append(File.separator).append(StringUtils.uncapitalize(modelName));
 
         // 6.模板生成的指定子包
         path.append(File.separator).append(templateFolder.replace(".", File.separator));

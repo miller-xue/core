@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by miller on 2018/9/18
  */
-public interface Service<T> {
+public interface BaseService<T> {
 
     int save(T model);//持久化
 

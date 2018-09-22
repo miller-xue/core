@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.*;
 public class GenServiceImpl implements GenService {
 
     /**
-     * 生成Controller Service ServiceImpl 代码
+     * 生成Controller BaseService ServiceImpl 代码
      * @param tableName
      * @param modelName
      */
@@ -40,7 +41,7 @@ public class GenServiceImpl implements GenService {
                 // 4.判断文件是否存在,存在不创建
                 if (filePath.exists() && filePath.isFile()) {
                     log.error("文件已存在: " + fileName);
-                    return;
+                    break;
                 }
                 // 4.写入本地
                 GenUtils.writeTemplate(template, getInitData(modelName,author), filePath);
@@ -63,7 +64,7 @@ public class GenServiceImpl implements GenService {
 
 
     /**
-     * 根据Mybatis 代码生成生成Model Mapper Mapper.xml
+     * 根据Mybatis 代码生成生成Model BaseMapper BaseMapper.xml
      * @param tableName
      * @param modelName
      */
@@ -82,27 +83,27 @@ public class GenServiceImpl implements GenService {
             generator = new MyBatisGenerator(cfg, callback, warnings);
             generator.generate(null);
         } catch (Exception e) {
-            throw new RuntimeException("Model 和  Mapper 生成失败!", e);
+            throw new RuntimeException("Model 和  BaseMapper 生成失败!", e);
         }
 
         if (generator == null || generator.getGeneratedJavaFiles().isEmpty() || generator.getGeneratedXmlFiles().isEmpty()) {
-            throw new RuntimeException("Model 和  Mapper 生成失败, warnings: " + warnings);
+            throw new RuntimeException("Model 和  BaseMapper 生成失败, warnings: " + warnings);
         }
 
-        log.info(modelName, "{}.java 生成成功!");
-        log.info(modelName, "{}Mapper.java 生成成功!");
-        log.info(modelName, "{}Mapper.xml 生成成功!");
+        log.info(modelName, ".java 生成成功!");
+        log.info(modelName, "Mapper.java 生成成功!");
+        log.info(modelName, "Mapper.xml 生成成功!");
     }
 
 
     /**
-     * 增加 Mapper 插件
+     * 增加 BaseMapper 插件
      * @param context
      */
     private void addMapperPlugin(Context context) {
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setConfigurationType("tk.mybatis.mapper.generator.MapperPlugin");
-        pluginConfiguration.addProperty("mappers", "com.miller.core.Mapper");
+        pluginConfiguration.addProperty("mappers", "com.miller.core.BaseMapper");
         context.addPluginConfiguration(pluginConfiguration);
     }
 
@@ -124,13 +125,13 @@ public class GenServiceImpl implements GenService {
             // TODO 没加上module name
             javaModelGeneratorConfiguration.setTargetProject(GenConstants.getJavaPath());
 
-            javaModelGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + ".model");
+            javaModelGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".model");
             context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
             // 2.Mapper配置
             JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();
             javaClientGeneratorConfiguration.setTargetProject(GenConstants.getJavaPath());
-            javaClientGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + ".mapper");
+            javaClientGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".mapper");
             javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
             context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
 

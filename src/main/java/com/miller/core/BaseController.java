@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by miller on 2018/9/18
  * @author Miller
  */
-public class Controller<T , S extends Service<T>> {
+public class BaseController<T , S extends BaseService<T>> {
 
     @Autowired
     private S currentService;

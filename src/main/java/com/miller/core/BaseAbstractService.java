@@ -7,9 +7,9 @@ import java.util.List;
 /**
  * Created by miller on 2018/9/18
  */
-public class AbstractService<T, M extends Mapper<T>> implements Service<T> {
+public class BaseAbstractService<T, M extends BaseMapper<T>> implements BaseService<T> {
 
-    public AbstractService() {
+    public BaseAbstractService() {
         // 获取currentMapper
         // 获取modelCLass
     }
