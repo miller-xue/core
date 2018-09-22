@@ -18,12 +18,28 @@ public enum TemplateEnum {
     SERVICE_IMPL("service_impl.ftl","service.impl","ServiceImpl.java"),
 */
     ;
+    /**
+     * 模板名称
+     */
     @Getter
     private String name;
+
+    /**
+     * 模板生成后所在包
+     */
     @Getter
-    private String pkg;
+    private String path;
+
+    /**
+     * 模板生成文件后缀
+     */
     private String suffix;
 
+    /**
+     * 获取文件名称,
+     * @param modelName 模板名称
+     * @return 文件名称
+     */
     public String getFileName(String modelName) {
        return modelName + suffix;
     }
