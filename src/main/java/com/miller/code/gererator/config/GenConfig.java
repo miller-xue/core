@@ -1,6 +1,8 @@
 package com.miller.code.gererator.config;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -10,13 +12,43 @@ import java.util.Properties;
  */
 public class GenConfig{
 
+    /**
+     * 项目在硬盘上的基础路径
+     */
+
+    private static String PROJECT_PATH = System.getProperty("user.dir");
+    /**
+     * 生成java文件所存基础路径
+     */
+    private static String JAVA_PATH = "/src/main/java";
+
+    /**
+     * 生成资源文件所存路径
+     */
+    private static String RESOURCES_PATH = "/src/main/resources";
+
+    /**
+     * 模板文件相对路径 /开头为绝对路径
+     */
+    public static String TEMPLATE_FILE_PATH = "src/main/resources/generator";
+
+
+
     public static String JDBC_URL;
 
     public static String JDBC_USERNAME;
 
     public static String JDBC_PASSWORD;
 
+    /**
+     * 数据库类型
+     */
     public static DBTypeEnum DB_TYPE;
+
+    /**
+     * 如果项目为分模块项目,输入模块名
+     */
+    private static String MODULE_NAME;
 
     /**
      * 项目基础包名,列入 com.miller, com.miller.seckill, com.miller.sell
@@ -44,17 +76,27 @@ public class GenConfig{
             InputStream in = GenConfig.class.getClassLoader().getResourceAsStream("generatorConfig.properties");
             prop.load(in);
         } catch (Exception e) {
-
             throw new RuntimeException("加载配置文件异常!", e);
+            //TODO 多模块项目配置文件路径可能会发生变化, 默认读取Resources 下 聚合项目读取核心包下
         }
         return prop;
     }
 
-
+    /**
+     * 获取java代码绝对根路径
+     * @return
+     */
+    public static String getJavaPath() {
+        return PROJECT_PATH + (StringUtils.isBlank(MODULE_NAME) ? "" : "/" + MODULE_NAME) + JAVA_PATH;
+    }
 
     /**
-     * 如果项目为分模块项目,输入模块名
+     * 获取资源文件绝对根路径
+     * @return
      */
-    public static String MODULE_NAME;
+    public static String getResourcePath() {
+        return PROJECT_PATH + (StringUtils.isBlank(MODULE_NAME) ? "" : "/" + MODULE_NAME) + RESOURCES_PATH;
+
+    }
 
 }

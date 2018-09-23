@@ -3,7 +3,6 @@ package com.miller.code.gererator.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by miller on 2018/9/19

@@ -1,11 +1,11 @@
 package com.miller.code.gererator.service.impl;
 
 import com.miller.code.gererator.config.GenConfig;
-import com.miller.code.gererator.config.GenConstants;
 import com.miller.code.gererator.config.TemplateEnum;
 import com.miller.code.gererator.service.GenService;
 import com.miller.code.gererator.util.GenUtils;
 import freemarker.template.Template;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
@@ -23,11 +23,14 @@ public class GenServiceImpl implements GenService {
 
     /**
      * 生成Controller BaseService ServiceImpl 代码
+     *
      * @param tableName
      * @param modelName
      */
     @Override
-    public void generatorCode(String tableName, String modelName,String author) {
+    public void generatorCode(@NonNull String tableName, @NonNull String modelName, @NonNull String author) {
+        // 强制模块首字母大写
+        modelName = StringUtils.capitalize(modelName);
         try {
             TemplateEnum[] templateEnums = TemplateEnum.values();
             for (TemplateEnum templateEnum : templateEnums) {
@@ -36,15 +39,16 @@ public class GenServiceImpl implements GenService {
                 File basePath = GenUtils.getBasePath(modelName, templateEnum.getPath());
                 // 2.获得文件名称
                 String fileName = templateEnum.getFileName(modelName);
+
                 // 3.生成文件全路径
                 File filePath = new File(basePath, fileName);
                 // 4.判断文件是否存在,存在不创建
                 if (filePath.exists() && filePath.isFile()) {
                     log.error("文件已存在: " + fileName);
-                    break;
+                    continue;
                 }
                 // 4.写入本地
-                GenUtils.writeTemplate(template, getInitData(modelName,author), filePath);
+                GenUtils.writeTemplate(template, getInitData(modelName, author), filePath);
                 log.info("生成代码成功" + fileName);
             }
         } catch (Exception e) {
@@ -55,9 +59,13 @@ public class GenServiceImpl implements GenService {
 
     public Map<String, Object> getInitData(String modelName,String author) {
         Map<String, Object> data = new HashMap<>();
+        // 1. 当前时间
         data.put("now", new Date());
+        // 2. 作者
         data.put("author", author);
+        // 3. 模型名首字母为大写
         data.put("modelName", modelName);
+        // 4. 基础包
         data.put("basePackage", GenConfig.BASE_PACKAGE);
         return data;
     }
@@ -90,9 +98,9 @@ public class GenServiceImpl implements GenService {
             throw new RuntimeException("Model 和  BaseMapper 生成失败, warnings: " + warnings);
         }
 
-        log.info(modelName, ".java 生成成功!");
-        log.info(modelName, "Mapper.java 生成成功!");
-        log.info(modelName, "Mapper.xml 生成成功!");
+        log.info(modelName + ".java 生成成功!");
+        log.info(modelName + "Mapper.java 生成成功!");
+        log.info(modelName + "Mapper.xml 生成成功!");
     }
 
 
@@ -123,14 +131,14 @@ public class GenServiceImpl implements GenService {
             // 1.model配置路径
             JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
             // TODO 没加上module name
-            javaModelGeneratorConfiguration.setTargetProject(GenConstants.getJavaPath());
+            javaModelGeneratorConfiguration.setTargetProject(GenConfig.getJavaPath());
 
             javaModelGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".model");
             context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
             // 2.Mapper配置
             JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();
-            javaClientGeneratorConfiguration.setTargetProject(GenConstants.getJavaPath());
+            javaClientGeneratorConfiguration.setTargetProject(GenConfig.getJavaPath());
             javaClientGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".mapper");
             javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
             context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
@@ -171,7 +179,7 @@ public class GenServiceImpl implements GenService {
 
 
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
-        sqlMapGeneratorConfiguration.setTargetProject(GenConstants.getResourcePath());
+        sqlMapGeneratorConfiguration.setTargetProject(GenConfig.getResourcePath());
         sqlMapGeneratorConfiguration.setTargetPackage("mapper");
         context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
@@ -180,5 +188,4 @@ public class GenServiceImpl implements GenService {
 
         return context;
     }
-
 }
