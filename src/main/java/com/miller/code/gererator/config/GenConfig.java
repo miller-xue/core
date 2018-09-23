@@ -32,6 +32,21 @@ public class GenConfig{
      */
     public static String TEMPLATE_FILE_PATH = "src/main/resources/generator";
 
+    /**
+     * sqlMapper 生成后的指定包
+     */
+    public static String SQL_MAPPER_PACKAGE = "mapper";
+
+    /**
+     * mapper生成后的制定包
+     */
+    public static String MAPPER_PACKAGE = "dao";
+
+    /**
+     * model生成后的指定包
+     */
+    public static String MODEL_PACKAGE = "model";
+
 
 
     public static String JDBC_URL;

@@ -36,7 +36,7 @@ public class GenServiceImpl implements GenService {
             for (TemplateEnum templateEnum : templateEnums) {
                 Template template = GenUtils.getTemplate(templateEnum.getName());
                 // 1.获得基础路径
-                File basePath = GenUtils.getBasePath(modelName, templateEnum.getPath());
+                File basePath = GenUtils.getBasePath(modelName, templateEnum.getTargetPkg());
                 // 2.获得文件名称
                 String fileName = templateEnum.getFileName(modelName);
 
@@ -67,6 +67,7 @@ public class GenServiceImpl implements GenService {
         data.put("modelName", modelName);
         // 4. 基础包
         data.put("basePackage", GenConfig.BASE_PACKAGE);
+        data.put("templateEnum", TemplateEnum.toMap());
         return data;
     }
 
@@ -133,13 +134,13 @@ public class GenServiceImpl implements GenService {
             // TODO 没加上module name
             javaModelGeneratorConfiguration.setTargetProject(GenConfig.getJavaPath());
 
-            javaModelGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".model");
+            javaModelGeneratorConfiguration.setTargetPackage(GenUtils.getTargetPkg(modelName, GenConfig.MODEL_PACKAGE));
             context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
             // 2.Mapper配置
             JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();
             javaClientGeneratorConfiguration.setTargetProject(GenConfig.getJavaPath());
-            javaClientGeneratorConfiguration.setTargetPackage(GenConfig.BASE_PACKAGE + "." + StringUtils.uncapitalize(modelName) + ".mapper");
+            javaClientGeneratorConfiguration.setTargetPackage(GenUtils.getTargetPkg(modelName, GenConfig.MAPPER_PACKAGE));
             javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
             context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
 
@@ -177,10 +178,10 @@ public class GenServiceImpl implements GenService {
         jdbcConnectionConfiguration.setDriverClass(GenConfig.DB_TYPE.getDirverClassName());
         context.setJdbcConnectionConfiguration(jdbcConnectionConfiguration);
 
-
+        // 3.SqlMapper配置
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
         sqlMapGeneratorConfiguration.setTargetProject(GenConfig.getResourcePath());
-        sqlMapGeneratorConfiguration.setTargetPackage("mapper");
+        sqlMapGeneratorConfiguration.setTargetPackage(GenConfig.SQL_MAPPER_PACKAGE);
         context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
         // 增加 mapper 插件

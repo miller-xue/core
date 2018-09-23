@@ -1,10 +1,10 @@
-package ${basePackage}.${modelName?uncap_first}.controller;
+package ${basePackage}.${modelName?uncap_first}.${templateEnum.CONTROLLER.targetPkg};
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.miller.core.BaseController;
 import ${basePackage}.${modelName?uncap_first}.model.${modelName};
-import ${basePackage}.${modelName?uncap_first}.service.${modelName}Service;
+import ${basePackage}.${modelName?uncap_first}.${templateEnum.SERVICE.targetPkg}.${modelName}Service;
 
 /**
  *
@@ -12,7 +12,7 @@ import ${basePackage}.${modelName?uncap_first}.service.${modelName}Service;
  */
 @Controller
 @RequestMapping("/${modelName?uncap_first }")
-public class ${modelName}Controller extends BaseController<${modelName}, ${modelName}Service> {
+public class ${modelName}${templateEnum.CONTROLLER.suffix} extends BaseController<${modelName}, ${modelName}${templateEnum.SERVICE.suffix}> {
 
 
 }

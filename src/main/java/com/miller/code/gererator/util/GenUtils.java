@@ -76,24 +76,34 @@ public class GenUtils
     /**
      * 获取文件基础路径包路径
      * @param modelName 模型名称
-     * @param templateFolder 模板生成后包
+     * @param targetPkg 文件生成后包
      * @return
      */
-    public static File getBasePath(String modelName , String templateFolder) {
+    public static File getBasePath(String modelName , String targetPkg) {
         // 1.获得java文件的绝对路径,如过为聚合项目,则为聚合项目全路径
         StringBuilder path = new StringBuilder(GenConfig.getJavaPath()).append(File.separator);
 
         // 2.获得生成后代码所在包名     TODO 可以考虑加上子包。childModuleName
-        // 基础包 + 模型名 + 模板生成默认子包
-        StringBuilder basePackage = new StringBuilder(GenConfig.BASE_PACKAGE);
-        basePackage.append(".").append(StringUtils.uncapitalize(modelName)).append(".").append(templateFolder);
+        String pkg = getTargetPkg(modelName, targetPkg);
 
-
-        path.append(basePackage.toString().replace(".", File.separator));
+        path.append(pkg.replace(".", File.separator));
         File file = new File(path.toString());
         if (!file.exists()) {
             file.mkdirs();
         }
         return file;
+    }
+
+    /**
+     * 根据model名称和目标文件夹生成包名
+     * @param modelName 模型名
+     * @param targetPkg 目标文件夹
+     * @return basePackage.modelName.targetFolder
+     * 基础包 + 模型名 + 模板生成目标文件夹
+     */
+    public static String getTargetPkg(String modelName, String targetPkg) {
+        return new StringBuilder(GenConfig.BASE_PACKAGE)
+                .append(".").append(StringUtils.uncapitalize(modelName))
+                .append(".").append(targetPkg).toString();
     }
 }

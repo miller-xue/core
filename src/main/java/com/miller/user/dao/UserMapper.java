@@ -1,4 +1,4 @@
-package com.miller.user.mapper;
+package com.miller.user.dao;
 
 import com.miller.core.BaseMapper;
 import com.miller.user.model.User;
