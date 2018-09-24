@@ -61,7 +61,7 @@ public class GenConfig{
     public static DBTypeEnum DB_TYPE;
 
     /**
-     * 如果项目为分模块项目,输入模块名
+     * 如果项目为分模块项目,输入模块名 TODO 模块名应该每次生成的时候输入,OR 系统常量进行选择
      */
     private static String MODULE_NAME;
 

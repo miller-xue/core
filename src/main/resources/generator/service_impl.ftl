@@ -12,7 +12,7 @@ import ${basePackage}.${modelName?uncap_first}.dao.${modelName}Mapper;
  * Created by ${author} on ${now?string("yyyy-MM-dd")}
  */
 @Service
-public class ${modelName}${templateEnum.SERVICE_IMPL.suffix} extends BaseAbstractService<${modelName},${modelName}Mapper> implements ${modelName}${templateEnum.CONTROLLER.suffix}  {
+public class ${modelName}${templateEnum.SERVICE_IMPL.suffix} extends BaseAbstractService<${modelName},${modelName}Mapper> implements ${modelName}${templateEnum.SERVICE.suffix}  {
 
 
 }

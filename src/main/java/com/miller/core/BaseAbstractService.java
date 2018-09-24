@@ -1,7 +1,11 @@
 package com.miller.core;
 
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import tk.mybatis.mapper.entity.Condition;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -10,53 +14,85 @@ import java.util.List;
 public class BaseAbstractService<T, M extends BaseMapper<T>> implements BaseService<T> {
 
     public BaseAbstractService() {
-        // 获取currentMapper
-        // 获取modelCLass
+        initModelClass();
+    }
+
+    /**
+     * 初始化model 类型
+     */
+    private void initModelClass() {
+        ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        modelClass = (Class<T>) pt.getActualTypeArguments()[1];
     }
 
     /**
      * 当前服务层的mapper
      */
     @Autowired
-    private M currentMapper;
+    private M mapper;
+
 
     /**
      * 当前泛型真实类型的Class
      */
     private Class<T> modelClass;
 
-
+    /**
+     * 获取当前Mapper引用
+     * @return
+     */
     protected M getCurrentMapper() {
-        return this.currentMapper;
+        return this.mapper;
     }
 
-    @Override
-    public int save(T model) {
-        return 1;
+    public void save(T model) {
+        mapper.insertSelective(model);
     }
 
-    @Override
-    public int save(List<T> models) {
-        return 0;
+    public void save(List<T> models) {
+        mapper.insertList(models);
     }
 
-    @Override
-    public int deleteById(Integer id) {
-        return 0;
+    public void deleteById(Integer id) {
+        mapper.deleteByPrimaryKey(id);
     }
 
-    @Override
-    public int deleteByIds(String ids) {
-        return 0;
+    public void deleteByIds(String ids) {
+        mapper.deleteByIds(ids);
     }
 
-    @Override
-    public int update(T model) {
-        return 0;
+    public void update(T model) {
+        mapper.updateByPrimaryKeySelective(model);
     }
 
-    @Override
     public T findById(Integer id) {
-        return null;
+        return mapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public T findBy(String fieldName, Object value) throws TooManyResultsException {
+        try {
+            T model = modelClass.newInstance();
+            Field field = modelClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(model, value);
+            return mapper.selectOne(model);
+        } catch (ReflectiveOperationException e) {
+            // TODO 抛出异常
+//            throw new ServiceException(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public List<T> findByIds(String ids) {
+        return mapper.selectByIds(ids);
+    }
+
+    public List<T> findByCondition(Condition condition) {
+        return mapper.selectByCondition(condition);
+    }
+
+    public List<T> findAll() {
+        return mapper.selectAll();
     }
 }

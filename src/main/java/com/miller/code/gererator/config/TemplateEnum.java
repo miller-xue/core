@@ -53,6 +53,10 @@ public enum TemplateEnum {
         return new StringBuilder(modelName).append(suffix).append(".").append(extensionName).toString();
     }
 
+    /**
+     * 考虑删除该方法 TODO
+     * @return
+     */
     public static Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
         for (TemplateEnum templateEnum : values()) {
@@ -62,9 +66,5 @@ public enum TemplateEnum {
             result.put(templateEnum.name(), obj);
         }
         return result;
-    }
-
-    public static void main(String[] args) {
-        toMap();
     }
 }
